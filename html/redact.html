@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список Полей</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/redact.css">
+    <script rel="stylesheet" src="/scripts/authorization.js"></script>
+    <script rel="stylesheet" src="/scripts/redact.js"></script> 
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/">
+                    <img style="width: 100px;" src="/img/logo.png">
+                </a>
+                <nav class="header-nav">
+                    <a class="button-link" href="/panel">Панель управления</a>
+                </nav>
+            </div>  
+        </div>
+    </header>
+
+    <main>
+        <div class="container1">
+            <h1>Список Полей</h1>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Введите название поля">
+                <button onclick="searchFields()">Поиск</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Название поля</th>
+                        <th>Адрес</th>
+                        <th>Размер поля</th>
+                        <th>Количество игроков</th>
+                        <th>Тип покрытия</th>
+                        <th>Освещение</th>
+                        <th>Скамейки</th>
+                        <th>Раздевалки</th>
+                        <th>Парковка</th>
+                        <th>Фото</th>
+                        <th>Цена</th>
+                        <th>Информация</th>
+
+                        <!-- Кнопки редактирования и удаления -->
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="field-table-body"></tbody> <!-- Изменено ID для соответствия -->
+            </table>
+        </div>
+    </main>
+
+
+    <!-- Скрипт для загрузки полей -->
+    <script>
+        async function loadFields() {
+            try {
+                const response = await fetch('/select_fields'); // Запрос на получение полей
+                if (!response.ok) throw new Error('Ошибка при получении данных полей.');
+
+                const fields = await response.json();
+                const tableBody = document.getElementById('field-table-body');
+                tableBody.innerHTML = ''; // Очищаем таблицу перед добавлением новых данных
+
+                fields.forEach(field => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${field.field_id}</td>
+                        <td>${field.name_field}</td>
+                        <td>${field.address}</td>
+                        <td>${field.size_field}</td>
+                        <td>${field.number_of_players}</td>
+                        <td>${field.type_of_coating}</td>
+                        <td>${field.is_lighting ? 'Есть' : 'Нет'}</td>
+                        <td>${field.is_stands ? 'Есть' : 'Нет'}</td>
+                        <td>${field.is_changings_rooms ? 'Есть' : 'Нет'}</td>
+                        <td>${field.is_parking ? 'Есть' : 'Нет'}</td>
+                        <td><img style="width: 100px;" src="/image/${field.field_id}" alt="${field.name_field} " class="field-image"></td>
+                        <td>${field.price} руб.</td>
+                        <td>${field.information || 'Нет дополнительной информации'}</td>
+
+                        <!-- Кнопки редактирования и удаления -->
+                        <td><button onclick="editField(${field.field_id})">Редактировать</button><button onclick="deleteField(${field.field_id})">Удалить</button></td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
+
+        // Функция для поиска полей
+        function searchFields() {
+            const query = document.getElementById('search-input').value;
+            // Здесь можно реализовать логику поиска по полям
+        }
+
+        // Загружаем поля при загрузке страницы
+        window.onload = loadFields;
+    </script>
+
+</body>
+
+</html>

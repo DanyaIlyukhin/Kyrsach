@@ -1,0 +1,51 @@
+body {
+    background-color: #ffffff; 
+    color: #000000; 
+    font-family: 'Open Sans', sans-serif;
+    
+}
+
+.form-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding-top: 50px;
+    gap: 0px;
+}
+
+.form-column {
+    display: flex;
+    flex-direction: column; 
+    background-color: rgba(40, 114, 184, 0.5); 
+    padding: 20px;
+}
+
+input[type="text"], input[type="file"], select, input[type="checkbox"] {
+    width: 100%;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #0000ff; 
+    padding: 10px;
+    background-color: rgba(240, 248, 255, 0.8); 
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #0000ff; 
+    color: white; 
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #00008b; 
+}
+
+@media (max-width: 768px) {
+    .form-container {
+        flex-direction: column;
+        align-items: center; 
+    }
+}

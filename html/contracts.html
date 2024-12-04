@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список Контрактов</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/redact.css">
+    <script src="/scripts/authorization.js"></script>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/">
+                    <img style="width: 100px;" src="/img/logo.png">
+                </a>
+                <nav class="header-nav">
+                    <a class="button-link" href="/panel">Панель управления</a>
+                </nav>
+            </div>  
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1>Список Контрактов</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Имя</th>
+                        <th>Фамилия</th>
+                        <th>Отчество</th>
+                        <th>Название организации</th>
+
+                        <!-- Кнопки редактирования и удаления -->
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="contracts-table-body"></tbody> <!-- Здесь будут отображаться контракты -->
+            </table>
+        </div>
+    </main>
+
+    <!-- Скрипт для загрузки контрактов -->
+    <script>
+        async function loadContracts() {
+            try {
+                const response = await fetch('/contracts'); // Запрос на получение контрактов
+                if (!response.ok) throw new Error('Ошибка при получении данных контрактов.');
+
+                const contracts = await response.json();
+                const tableBody = document.getElementById('contracts-table-body');
+                tableBody.innerHTML = ''; // Очищаем таблицу перед добавлением новых данных
+
+                contracts.forEach(contract => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${contract.record_id}</td>
+                        <td>${contract.first_name}</td>
+                        <td>${contract.surname}</td>
+                        <td>${contract.middlename}</td>
+                        <td>${contract.organization_name}</td>
+
+                        <!-- Кнопки редактирования и удаления -->
+                        <td><button onclick="editContract(${contract.record_id})">Редактировать</button><button onclick="deleteContract(${contract.record_id})">Удалить</button></td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
+
+        // Загружаем контракты при загрузке страницы
+        window.onload = loadContracts;
+    </script>
+
+</body>
+
+</html>

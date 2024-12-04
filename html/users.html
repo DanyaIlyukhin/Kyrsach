@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список Пользователей</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/redact.css">
+    <script rel="stylesheet" src="/scripts/authorization.js"></script>
+    <script rel="stylesheet" src="/scripts/users.js"></script>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/">
+                    <img style="width: 100px;" src="/img/logo.png">
+                </a>
+                <nav class="header-nav">
+                    <a class="button-link" href="/panel">Панель управления</a>
+                </nav>
+            </div>  
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1>Список Пользователей</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Имя</th>
+                        <th>Фамилия</th>
+                        <th>Отчество</th>
+                        <th>Логин</th>
+                        <th>Телефон</th>
+                        <th>Статус аккаунта</th>
+                        <th>Статус пользователя</th>
+
+                        <!-- Кнопки редактирования и удаления -->
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="users-table-body"></tbody> <!-- Здесь будут отображаться пользователи -->
+            </table>
+        </div>
+    </main>
+
+    <!-- Скрипт для загрузки пользователей -->
+    <script>
+        async function loadUsers() {
+            try {
+                const response = await fetch('/select_users'); 
+                console.log(response);// Запрос на получение пользователей
+                if (!response.ok) throw new Error('Ошибка при получении данных пользователей.');
+
+                const users = await response.json();
+                const tableBody = document.getElementById('users-table-body');
+                tableBody.innerHTML = ''; // Очищаем таблицу перед добавлением новых данных
+
+                users.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.user_id}</td>
+                        <td>${user.first_name}</td>
+                        <td>${user.surname}</td>
+                        <td>${user.middlename}</td>
+                        <td>${user.login}</td>
+                        <td>${user.telephone_number}</td>
+                        <td>${user.account_status? 'подтвержден' : 'не подтвержден'}</td>
+                        <td>${user.user_status}</td>
+
+                        <!-- Кнопки редактирования и удаления -->
+                        <td><button onclick="editUser(${user.user_id})">Редактировать</button><button onclick="deleteUser(${user.user_id})">Удалить</button></td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
+
+        // Загружаем пользователей при загрузке страницы
+        window.onload = loadUsers;
+    </script>
+
+</body>
+
+</html>

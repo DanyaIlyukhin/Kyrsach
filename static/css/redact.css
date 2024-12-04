@@ -1,0 +1,25 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f0f8ff; /* Светлый фон */
+    color: #333; /* Темный текст */
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    border: 1px solid #007bff; /* Синяя граница */
+    padding: 12px;
+    text-align: center;
+}
+th {
+    background-color: #007bff; /* Синий фон для заголовков */
+    color: white; /* Белый текст */
+}
+tr:nth-child(even) {
+    background-color: #e7f3ff; /* Светло-синий фон для четных строк */
+}
+.search-container {
+    margin-bottom: 20px;
+}

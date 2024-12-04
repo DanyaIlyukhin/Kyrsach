@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аренда Футбольных Полей</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/registr.css">
+    <script rel="stylesheet" src="/help.js"></script>
+    <script rel="stylesheet" src="/scripts/authorization.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/">
+                    <img style="width: 100px;" src="/img/logo.png">
+                </a>
+                <nav class="header-nav">
+                    <a class="button-link" href="/fields">Аренда Полей</a>
+                    <a class="button-link" href="#contacts">Контакты</a>
+                    <a class="button-link" href="#reviews">Отзывы</a>
+                </nav>
+
+                <div id="admin-panel" style="display: none;">
+                    <a class="button-link" href="/panel">Панель управления</a>
+                    <a class="button-link" href="/profile">Профиль</a>
+                    <button id="logout-button-1" class="back-button-link" style="color:  #5687fc;">Выход</button>
+                </div>
+                
+                <div id="auth-buttons">
+                    <a id="loginButton" class="button-link" href="#" onclick="openModal()">Вход</a> 
+                </div>
+                <div id="user-cabinet" style="display: none;">
+                    <a class="button-link" href="/profile">Профиль</a>
+                    <button id="logout-button-2" class="back-button-link" style="color:  #5687fc;">Выход</button>
+                </div>
+            </div>  
+        </div>
+    </header>
+
+    <main class="main back-image">
+        <div class="container" style="margin: 0px 100px;">
+            <h1 style="padding: 0; margin: 0;">
+                <a class="button-link" href="/fields">
+                    АРЕНДА ФУТБОЛЬНЫХ ПОЛЕЙ
+                </a>
+            </h1>
+            <p style="padding: 10px 0px; font-weight: 300;font-size: 26px;">
+                Начните свою футбольную карьеру с нами — аренда полей для любого уровня!
+            </p>
+            <div style="text-align: center; height: 200px; margin-top: 100px;">
+                <a class="button-link back-button-color" href="/fields">Найти подходящее поле</a>
+            </div>
+        </div>
+    </main>
+
+    <div class="main">
+        <div id="reviews" class="container">
+            <span class="text-reviews-z">ОТЗЫВЫ НАШИХ КЛИЕНТОВ</span>
+            <div class="text-position container-text">                
+                <div class="text-content" style="margin-top:40px; max-height: 600px;">
+                    <p style="padding: 10px;">
+                        Мы ценим ваши отзывы о качестве аренды полей и уровне обслуживания. Пожалуйста, поделитесь своим опытом!
+                    </p>
+                    <p style="padding: 10px;">
+                        Ваши отзывы помогут нам улучшить сервис и сделать его еще лучше для вас.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="contacts" class="back-image-footer" style="padding-top:100px;">
+        <div class="container" style="padding-top: 0px;height: 400px">
+            <div style="display: flex; flex-direction: column; gap:10px">
+                <span class="footer-text">КОНТАКТЫ</span>
+                <span class="footer-text2">Звоните по телефону</span>
+                <span class="footer-text3" style="padding-top: 10px;padding-bottom: 40px;">8 (800) 234-48-42</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно авторизации -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+
+            <!-- Вкладки для выбора формы -->
+            <div class="tab-container">
+                <button id="loginTab" onclick='showLogin()' class='tab-button active'>Вход</button>
+                <button id='registrationTab' onclick='showRegistration()' class='tab-button'>Регистрация</button>
+            </div>
+
+            <!-- Форма входа -->
+            <form id='loginForm' action="/login" method="POST"> 
+                <h2>Вход</h2>
+                
+                <label for='login'>Логин:</label>
+                <input type='text' id='login' name='login' required /> 
+            
+                <label for='loginPassword'>Пароль:</label>
+                <input type='password' id='loginPassword' name='password' required />
+            
+                <button type='submit'>Войти</button> 
+            </form>
+
+            <!-- Форма регистрации -->
+            <div id='registrationForm' style='display:none;'>
+                <h2>Регистрация</h2>
+                <form action="/register" method="POST"> <!-- Добавлен action и method -->
+                    <label for="first_name">Имя:</label>
+                    <input type="text" id="first_name" name="first_name" required maxlength="50">
+            
+                    <label for="surname">Фамилия:</label>
+                    <input type="text" id="surname" name="surname" required maxlength="50">
+            
+                    <label for="middlename">Отчество:</label>
+                    <input type="text" id="middlename" name="middlename" required maxlength="50">
+            
+                    <label for="login">Логин:</label>
+                    <input type="text" id="login" name="login" required maxlength="40">
+            
+                    <label for="password_user">Пароль:</label>
+                    <input type="password" id="password_user" name="password_user" required maxlength="30">
+            
+                    <label for="telephone_number">Телефон:</label>
+                    <input type="tel" id="telephone_number" name="telephone_number" required pattern="\d{11}" title="Введите 11-значный номер телефона">
+                    
+                    <button type='submit'>Зарегистрироваться</button> 
+                </form>
+            </div>
+        </div>
+    </div>
+</body> 
+</html>

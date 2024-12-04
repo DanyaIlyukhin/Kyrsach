@@ -1,0 +1,156 @@
+html {
+    scroll-behavior: smooth; /* Плавная прокрутка */
+}
+
+* {
+    margin: 0;
+    padding: 0;  
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #ffffff; /* Белый фон */
+    font-family: "Roboto", Sans-serif; /* Шрифт для всего тела */
+}
+
+.container {
+    margin: 0px 100px; /* Отступы для контейнера */
+}
+
+.button-link {
+    display: inline-block;
+    text-decoration: none; 
+    color: #5687fc; /* Темно-синий цвет текста */
+    border: 2px solid transparent; /* Граница для эффекта при наведении */
+    transition: color 0.3s; /* Плавный переход */
+}
+
+.button-link:hover {
+    color: #0056b3; /* Светло-синий цвет текста при наведении */
+    text-shadow: 0 0 10px #0056b3; 
+}
+
+.back-button-link {
+    text-decoration: none; 
+    color: #ffffff; /* Белый цвет текста */
+    border: 2px solid transparent;
+    padding: 5px 20px;
+    background-color: #003366; /* Темно-синий фон */
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.back-button-link:hover {
+    background-color: #0056b3; /* Светло-синий фон при наведении */
+}
+
+/* Header */
+.header {
+    position: sticky;
+    z-index: 3;
+    top: 0;
+    background-color: #003366; /* Темно-синий цвет фона заголовка */
+    padding: 8px 0px;
+    border-bottom: 1px solid #004080; /* Нижняя граница заголовка */
+}
+
+.header-login {
+    align-items: center;
+    display: flex;
+    gap: 40px; /* Промежуток между элементами */
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between; /* Разделение содержимого заголовка */
+    align-items: center;
+}
+
+.header-nav {
+    color: rgb(255, 255, 255); /* Белый цвет текста навигации */
+    display: flex;
+    gap: 50px; /* Промежуток между ссылками навигации */
+}
+
+/* Main Section */
+.main { 
+    padding: 60px 0px; /* Отступы для основного контента */
+    color: rgb(0, 51, 102); /* Темно-синий цвет текста основного контента */
+    font-family: "Oswald", Sans-serif; /* Шрифт для основного контента */
+    font-size: 38px; /* Размер шрифта заголовка */
+    font-weight: 700; /* Жирность шрифта заголовка */
+}
+
+.back-button-color {
+    background-color: rgba(92, 92, 92, 0.5); /* Полупрозрачный фон кнопки */
+    border-radius: 30px;                    
+    padding: 5px 30px;                      
+    transition: background-color 0.3s;      
+    color: white;                           
+}
+
+.back-button-color:hover {
+    background-color: rgba(67, 109, 235, 0.7); /* Более темный фон при наведении */
+}
+
+/* Reviews Section */
+
+.reviews {
+   display: flex;
+   flex-direction: column;
+}
+
+.text-reviews-z {
+   padding: 100px 0px; 
+   color: #003366; /* Темно-синий текст заголовка отзывов */
+   font-size: 70px;
+   font-weight: 600;
+   line-height: 18px;
+   width:300px;
+}
+
+.text-position {
+   display: flex;
+   margin-right: auto;
+   margin-left: auto;
+   position: relative; 
+   font-size: 20px;
+   font-weight: 100;
+}
+
+.text-content {
+   margin-bottom: 10px; 
+   line-height: 1.2; 
+   flex-grow: 1; 
+   overflow-y:auto; 
+}
+
+/* Footer Section */
+
+.footer-text {
+   font-family:"Roboto", Sans-serif;
+   color:#003366; /* Темно-синий цвет текста подвала */
+   font-size :65px;
+   font-weight :600;
+}
+
+.footer-text2 {
+   font-family:"Roboto", Sans-serif;
+   color:#0056b3; /* Светло-синий цвет текста подвала */
+   font-size :20px;
+   font-weight :100;
+}
+
+.footer-text3 {
+   font-family:"Roboto", Sans-serif;
+   color:#ffffff; /* Белый цвет текста подвала */
+   font-size :30px;
+   font-weight :300;
+}
+
+.footer-text4 {
+   font-family:"Roboto", Sans-serif;
+   color:#e5e5e5; /* Светло-серый цвет текста подвала */
+   font-size :20px;
+   font-weight :200;
+}
