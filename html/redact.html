@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="/css/redact.css">
     <script rel="stylesheet" src="/scripts/authorization.js"></script>
     <script rel="stylesheet" src="/scripts/redact.js"></script> 
+    <script rel="stylesheet" src="/update.js"></script> 
+    <script rel="stylesheet" src="/help.js"></script>
+    
 </head>
 
 <body>
@@ -18,8 +21,15 @@
                     <img style="width: 100px;" src="/img/logo.png">
                 </a>
                 <nav class="header-nav">
-                    <a class="button-link" href="/panel">Панель управления</a>
+                    <a class="button-link" href="/upload">Загрузка полей</a>
+                    <a class="button-link" href="/redact">Просмотр полей</a>
+                    <a class="button-link" href="/users">Просмотр пользователей</a>
+                    <a class="button-link" href="/contracts">Контракты</a>
                 </nav>
+                <div id="admin-panel" style="display: none;">
+                    <a class="button-link"   href="/profile">Профиль</a>
+                    <button id="logout-button-1" class="back-button-link" style="color:  #5687fc;">Выход</button>
+                </div>
             </div>  
         </div>
     </header>

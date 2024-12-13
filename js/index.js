@@ -23,7 +23,7 @@ app.use(('/js',express.static(path.join(__dirname))))
 
 
 app.use(cors({
-    origin: "http://localhost:3000", // ваш клиентский адрес
+    origin: "http://localhost:3000", 
     methods: ["GET", "POST"],
     credentials: true // Позволяет отправлять куки
 }));
@@ -46,14 +46,21 @@ const isAuthenticated = (req, res, next) => {
 };
 
 const isAdmin = (req, res, next) => {
-    if (req.session.user && req.session.user.user_status === 'admin') { // Проверяем наличие пользователя и его статус
+    if (req.session.user && req.session.user.user_status === 'admin') { 
         next();
     } else {
         res.redirect('/404');
     }
 };
 
-// Эндпоинт для проверки аутентификации
+const isConfirm = (req, res, next) => {
+    if (req.session.user && req.session.user.account_status === true) { 
+        next();
+    } else {
+        res.redirect('/404');
+    }
+};
+
 app.get('/api/check-auth', (req, res) => {
     if (req.session.user) {
         if (req.session.user.user_status === 'admin'){
@@ -82,27 +89,18 @@ app.get('/upload', isAdmin, (req, res) => {
 app.get('/fields', (req, res) => {
     res.sendFile(path.join(__dirname, '..', '/html/fields.html'));
 });
-app.get('/select_fields', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM FIELDS');
-        res.json(result.rows);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Ошибка при получении данных о полях.');
-    }
-});
 app.get('/redact', isAdmin, (req, res) => {
     res.sendFile(path.join(__dirname, '..', '/html/redact.html'));
 });
 app.get('/users', isAdmin, async (req, res) => {
     res.sendFile(path.join(__dirname, '..', '/html/users.html'));
 });
-
 app.get('/contracts', isAdmin, (req, res) => {
     res.sendFile(path.join(__dirname, '..', '/html/contracts.html'));
 });
-
-
+app.get('/profile' ,isAuthenticated, (req, res) => {
+    res.sendFile(path.join(__dirname, '..', '/html/profile.html'));
+});
 
 // Настройка multer для загрузки файлов в память
 const storage = multer.memoryStorage();
@@ -113,8 +111,10 @@ const upload = multer({ storage });
 require('./upload.js')(app, upload);
 require('./registration.js')(app);
 require('./scripts/users.js')(app, upload);
-// require('./scripts/redact.js')(app, upload);
+require('./update.js')(app, upload);
 require('./fields.js')(app);
+require('./profile.js')(app, upload);
+// require('./scripts/redact.js')(app, upload);
 
 
 // Запуск сервера

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль Пользователя</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <script rel="stylesheet" src="/profile.js"></script>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/">
+                    <img style="width: 100px;" src="/img/logo.png">
+                </a>
+                <nav class="header-nav">
+                    <a class="button-link" href="/fields">Аренда Полей</a>
+                    <a class="button-link" href="#contacts">Контакты</a>
+                    <a class="button-link" href="#reviews">Отзывы</a>
+                </nav>
+
+                <div id="admin-panel" style="display: none;">
+                    <a class="button-link" href="/panel">Панель управления</a>
+                    <a class="button-link"   href="/profile">Профиль</a>
+                    <button id="logout-button-1" class="back-button-link" style="color:  #5687fc;">Выход</button>
+                </div>
+                
+                <div id="auth-buttons">
+                    <a id="loginButton" class="button-link" href="#" onclick="openModal()">Вход</a> 
+                </div>
+                <div id="user-cabinet" style="display: none;">
+                    <a class="button-link" href="/profile">Профиль</a>
+                    <button id="logout-button-2" class="back-button-link" style="color:  #5687fc;">Выход</button>
+                </div>
+            </div>  
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div id="user-profile"></div> <!-- Здесь будут отображаться данные пользователя -->
+            <h2>Изменить данные</h2>
+            <form id="update-form">
+                <label for="first_name">Имя:</label>
+                <input type="text" id="first_name" name="first_name" required>
+
+                <label for="surname">Фамилия:</label>
+                <input type="text" id="surname" name="surname" required>
+
+                <label for="middlename">Отчество:</label>
+                <input type="text" id="middlename" name="middlename">
+
+                <label for="telephone_number">Телефон:</label>
+                <input type="text" id="telephone_number" name="telephone_number" required>
+
+                <button type="submit">Сохранить изменения</button>
+            </form>
+
+            <h2>Изменить пароль</h2>
+            <form id="change-password-form">
+                <label for="new_password">Новый пароль:</label>
+                <input type="password" id="new_password" name="new_password" required>
+
+                <button type="submit">Изменить пароль</button>
+            </form>
+
+            <h2>Заказы</h2>
+            <table id="orders-table">
+                <thead>
+                    <tr>
+                        <th>ID Заказа</th>
+                        <th>Дата Заказа</th>
+                        <th>Статус Заказа</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-table-body"></tbody> <!-- Здесь будут отображаться заказы -->
+            </table>
+        </div>
+    </main>
+
+    <!-- Скрипт для загрузки данных пользователя и его заказов -->
+    <script>
+        async function loadUserProfile(userId) {
+            try {
+                const response = await fetch(`/profile/${userId}`);
+                if (!response.ok) throw new Error('Ошибка при получении данных пользователя.');
+
+                const user = await response.json();
+                document.getElementById('user-profile').innerHTML = `
+                    <p><strong>ID:</strong> ${user.user_id}</p>
+                    <p><strong>Имя:</strong> ${user.first_name}</p>
+                    <p><strong>Фамилия:</strong> ${user.surname}</p>
+                    <p><strong>Отчество:</strong> ${user.middlename}</p>
+                    <p><strong>Логин:</strong> ${user.login}</p>
+                    <p><strong>Телефон:</strong> ${user.telephone_number}</p>
+                    <p><strong>Статус аккаунта:</strong> ${user.account_status}</p>
+                    <p><strong>Статус пользователя:</strong> ${user.user_status}</p>
+                `;
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
+
+        async function loadUserOrders(userId) {
+            try {
+                const response = await fetch(`/orders/${userId}`);
+                if (!response.ok) throw new Error('Ошибка при получении заказов.');
+
+                const orders = await response.json();
+                const tableBody = document.getElementById('orders-table-body');
+                tableBody.innerHTML = ''; // Очищаем таблицу перед добавлением новых данных
+
+                orders.forEach(order => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${order.order_id}</td>
+                        <td>${order.order_date}</td>
+                        <td>${order.order_status}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
+
+        // Загрузка профиля и заказов при загрузке страницы
+        window.onload = () => {
+            const userId = req.session.user.user_id; // Замените на актуальный ID пользователя
+            loadUserProfile(userId);
+            loadUserOrders(userId);
+        };
+
+        // Обработка отправки формы для обновления данных
+        document.getElementById('update-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            // Логика для обновления данных пользователя
+            // ...
+        });
+
+        // Обработка отправки формы для изменения пароля
+        document.getElementById('change-password-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            // Логика для изменения пароля
+            // ...
+        });
+    </script>
+
+</body>
+
+</html>

@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Аренда Футбольных Полей</title>
     <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/fields.css">
     <script rel="stylesheet" src="/fields.js"></script>
+    <script rel="stylesheet" src="/help.js"></script>
+    <link rel="stylesheet" href="/css/registr.css">
+    <script rel="stylesheet" src="/scripts/fetchfields.js"></script> 
+    <script rel="stylesheet" src="/scripts/authorization.js"></script>
 </head>
 <body>
     <header class="header">
@@ -17,73 +22,85 @@
                 <nav class="header-nav">
                     <a class="button-link" href="/fields">Аренда Полей</a>
                 </nav>
+                <div id="admin-panel" style="display: none;">
+                    <a class="button-link" href="/panel">Панель управления</a>
+                    <a class="button-link"   href="/profile">Профиль</a>
+                    <button id="logout-button-1" class="back-button-link" style="color:  #5687fc;">Выход</button>
+                </div>
+                
+                <div id="auth-buttons">
+                    <a id="loginButton" class="button-link" href="#" onclick="openModal()">Вход</a> 
+                </div>
+                <div id="user-cabinet" style="display: none;">
+                    <a class="button-link" href="/profile">Профиль</a>
+                    <button id="logout-button-2" class="back-button-link" style="color:  #5687fc;">Выход</button>
+                </div>
             </div>  
         </div>
     </header>
     <main>
         <div class="container">
             <h1>Список Полей</h1>
-            <div id="fields-container"></div> <!-- Здесь будут отображаться поля -->
+            <div class="field-container" id="field-container"></div> <!-- Здесь будут отображаться поля -->
         </div>
+        <!-- Модальное окно авторизации -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+
+            <!-- Вкладки для выбора формы -->
+            <div class="tab-container">
+                <button id="loginTab" onclick='showLogin()' class='tab-button active'>Вход</button>
+                <button id='registrationTab' onclick='showRegistration()' class='tab-button'>Регистрация</button>
+            </div>
+
+            <!-- Форма входа -->
+            <form id='loginForm' action="/login" method="POST"> 
+                <h2>Вход</h2>
+                
+                <label for='login'>Логин:</label>
+                <input type='text' id='login' name='login' required /> 
+            
+                <label for='loginPassword'>Пароль:</label>
+                <input type='password' id='loginPassword' name='password' required />
+            
+                <button type='submit'>Войти</button> 
+            </form>
+
+            <!-- Форма регистрации -->
+            <div id='registrationForm' style='display:none;'>
+                <h2>Регистрация</h2>
+                <form action="/register" method="POST"> <!-- Добавлен action и method -->
+                    <label for="first_name">Имя:</label>
+                    <input type="text" id="first_name" name="first_name" required maxlength="50">
+            
+                    <label for="surname">Фамилия:</label>
+                    <input type="text" id="surname" name="surname" required maxlength="50">
+            
+                    <label for="middlename">Отчество:</label>
+                    <input type="text" id="middlename" name="middlename" required maxlength="50">
+            
+                    <label for="login">Логин:</label>
+                    <input type="text" id="login" name="login" required maxlength="40">
+            
+                    <label for="password_user">Пароль:</label>
+                    <input type="password" id="password_user" name="password_user" required maxlength="30">
+            
+                    <label for="telephone_number">Телефон:</label>
+                    <input type="tel" id="telephone_number" name="telephone_number" required pattern="\d{11}" title="Введите 11-значный номер телефона">
+                    
+                    <button type='submit'>Зарегистрироваться</button> 
+                </form>
+            </div>
+        </div>
+    </div>
     </main>
 
-
-    <!-- Скрипт для загрузки полей -->
     <script>
-        async function loadFields() {
-            try {
-                const response = await fetch('/select_fields'); // Запрос на получение полей
-                if (!response.ok) throw new Error('Ошибка при получении данных полей.');
-
-                const fields = await response.json();
-                const container = document.getElementById('fields-container');
-                container.innerHTML = ''; // Очищаем контейнер перед добавлением новых данных
-
-                fields.forEach(field => {
-                    const fieldDiv = document.createElement('div');
-                    fieldDiv.className = 'object-search-results__item'; // Класс для стилизации
-                    fieldDiv.innerHTML = `
-                        <a href="#" class="object-search-card object-search-card_link object-search-card_type_inline object-search-card_horizontal">
-                            <div class="object-search-card__content">
-                                <div class="object-search-card__header">
-                                    <div class="object-search-card__title">${field.name_field}</div>
-                                </div>
-                                <div class="object-search-card__cover" style="background-image: url(<img style="width: 100px;" src="/image/${field.field_id}" alt="${field.name_field} " class="field-image"></div>
-                                <div class="object-search-card__body">
-                                    <div class="object-search-card__def">
-                                        <div class="object-search-card__def-name">Адрес:</div>
-                                        <div class="object-search-card__def-value">${field.address}</div>
-                                    </div>
-                                    <div class="object-search-card__def">
-                                        <div class="object-search-card__def-name">Размер поля:</div>
-                                        <div class="object-search-card__def-value">${field.size_field}</div>
-                                    </div>
-                                    <div class="object-search-card__def">
-                                        <div class="object-search-card__def-name">Количество игроков:</div>
-                                        <div class="object-search-card__def-value">${field.number_of_players}</div>
-                                    </div>
-                                    <div class="object-search-card__def">
-                                        <div class="object-search-card__def-name">Тип покрытия:</div>
-                                        <div class="object-search-card__def-value">${field.type_of_coating}</div>
-                                    </div>
-                                    <div class="object-search-card__def">
-                                        <div class="object-search-card__def-name">Освещение:</div>
-                                        <div class="object-search-card__def-value">${field.is_lighting ? 'Да' : 'Нет'}</div>
-                                    </div>
-                                    <!-- Добавьте другие поля по аналогии -->
-                                </div>
-                            </div>
-                        </a>
-                    `;
-                    container.appendChild(fieldDiv);
-                });
-            } catch (error) {
-                console.error('Ошибка:', error);
-            }
-        }
-
-        // Загружаем поля при загрузке страницы
-        window.onload = loadFields;
+        window.onload = () => {
+            fetchFields(); // Получение полей
+            checkAuth(); // Проверка статуса аутентификации
+        };
     </script>
 
 </body>

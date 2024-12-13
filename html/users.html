@@ -6,20 +6,27 @@
     <title>Список Пользователей</title>
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/redact.css">
-    <script rel="stylesheet" src="/scripts/authorization.js"></script>
-    <script rel="stylesheet" src="/scripts/users.js"></script>
+    <script src="/scripts/authorization.js"></script>
+    <script src="/scripts/users.js"></script>
+    <script src="/help.js"></script>
 </head>
-
 <body>
     <header class="header">
         <div class="container">
             <div class="header-content">
                 <a href="/">
-                    <img style="width: 100px;" src="/img/logo.png">
+                    <img style="width: 100px;" src="/img/logo.png" alt="Логотип">
                 </a>
                 <nav class="header-nav">
-                    <a class="button-link" href="/panel">Панель управления</a>
+                    <a class="button-link" href="/upload">Загрузка полей</a>
+                    <a class="button-link" href="/redact">Просмотр полей</a>
+                    <a class="button-link" href="/users">Просмотр пользователей</a>
+                    <a class="button-link" href="/contracts">Контракты</a>
                 </nav>
+                <div id="admin-panel" style="display: none;">
+                    <a class="button-link" href="/profile">Профиль</a>
+                    <button id="logout-button-1" class="back-button-link" style="color:  #5687fc;">Выход</button>
+                </div>
             </div>  
         </div>
     </header>
@@ -45,47 +52,135 @@
                 </thead>
                 <tbody id="users-table-body"></tbody> <!-- Здесь будут отображаться пользователи -->
             </table>
+
+            <!-- Модальное окно для редактирования статуса пользователя -->
+            <div id="edit-modal" style="display:none;">
+                <div class="modal-content">
+                    <span id="close-modal" style="cursor:pointer;">&times;</span>
+                    <h2>Редактировать статус пользователя</h2>
+                    <label for="user-status">Выберите статус:</label>
+                    <select id="user-status">
+                        <option value="admin">Администратор</option>
+                        <option value="user">Пользователь</option>
+                        <option value="blocked">Заблокирован</option>
+                    </select>
+                    <button id="save-status-button">Сохранить изменения</button>
+                </div>
+            </div>
+
         </div>
-    </main>
 
-    <!-- Скрипт для загрузки пользователей -->
-    <script>
-        async function loadUsers() {
-            try {
-                const response = await fetch('/select_users'); 
-                console.log(response);// Запрос на получение пользователей
-                if (!response.ok) throw new Error('Ошибка при получении данных пользователей.');
+        <!-- Скрипт для загрузки пользователей -->
+        <script>
+            let currentUserId = null; // Для хранения ID текущего редактируемого пользователя
 
-                const users = await response.json();
-                const tableBody = document.getElementById('users-table-body');
-                tableBody.innerHTML = ''; // Очищаем таблицу перед добавлением новых данных
+            async function loadUsers() {
+                try {
+                    const response = await fetch('/select_users'); 
+                    console.log(response); // Запрос на получение пользователей
+                    if (!response.ok) throw new Error('Ошибка при получении данных пользователей.');
 
-                users.forEach(user => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${user.user_id}</td>
-                        <td>${user.first_name}</td>
-                        <td>${user.surname}</td>
-                        <td>${user.middlename}</td>
-                        <td>${user.login}</td>
-                        <td>${user.telephone_number}</td>
-                        <td>${user.account_status? 'подтвержден' : 'не подтвержден'}</td>
-                        <td>${user.user_status}</td>
+                    const users = await response.json();
+                    const tableBody = document.getElementById('users-table-body');
+                    tableBody.innerHTML = ''; // Очищаем таблицу перед добавлением новых данных
 
-                        <!-- Кнопки редактирования и удаления -->
-                        <td><button onclick="editUser(${user.user_id})">Редактировать</button><button onclick="deleteUser(${user.user_id})">Удалить</button></td>
-                    `;
-                    tableBody.appendChild(row);
-                });
-            } catch (error) {
-                console.error('Ошибка:', error);
+                    users.forEach(user => {
+                        const row = document.createElement('tr');
+                        
+                        // Установка цвета статуса аккаунта
+                        const accountStatusColor = user.account_status ? 'green' : 'red';
+                        
+                        row.innerHTML = `
+                            <td>${user.user_id}</td>
+                            <td>${user.first_name}</td>
+                            <td>${user.surname}</td>
+                            <td>${user.middlename}</td>
+                            <td>${user.login}</td>
+                            <td>${user.telephone_number}</td>
+                            <td style="color: ${accountStatusColor};">
+                                ${user.account_status ? 'подтвержден' : 'не подтвержден'}
+                                ${!user.account_status ? `<button onclick="confirmAccount(${user.user_id}, ${true})">Подтвердить</button>` : ''}
+                            </td> 
+                            <td>${user.user_status}</td>
+                            <td><button onclick="editUser(${user.user_id})">Редактировать</button><button onclick="deleteUser(${user.user_id})">Удалить</button></td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } catch (error) {
+                    console.error('Ошибка:', error);
+                }
             }
-        }
 
-        // Загружаем пользователей при загрузке страницы
-        window.onload = loadUsers;
-    </script>
+            function confirmAccount(userId) {
+                if (confirm('Вы уверены, что хотите подтвердить этот аккаунт?')) {
+                    updateAccountStatus(userId, true); // Вызываем функцию обновления статуса на подтвержденный
+                }
+            }
+
+            async function updateAccountStatus(userId, status) {
+                try {
+                    const response = await fetch(`/update_account_status/${userId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ account_status: status }) // Отправляем новый статус на сервер
+                    });
+
+                    if (!response.ok) throw new Error('Ошибка при обновлении статуса аккаунта.');
+
+                    alert('Статус аккаунта успешно обновлен!');
+                    loadUsers(); // Обновляем список пользователей
+                } catch (error) {
+                    console.error('Ошибка:', error);
+                }
+            }
+
+            function editUser(userId) {
+                currentUserId = userId; // Сохраняем ID пользователя для редактирования
+                document.getElementById('edit-modal').style.display = 'block'; // Показываем модальное окно
+            }
+
+            document.getElementById('close-modal').onclick = function() {
+                document.getElementById('edit-modal').style.display = 'none'; // Закрываем модальное окно
+            }
+
+            document.getElementById('save-status-button').onclick = async function() {
+                const status = document.getElementById('user-status').value; // Получаем выбранный статус
+                try {
+                    const response = await fetch(`/update_user_status/${currentUserId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ user_status: status }) // Отправляем новый статус на сервер
+                    });
+
+                    if (!response.ok) throw new Error('Ошибка при обновлении статуса пользователя.');
+
+                    alert('Статус пользователя успешно обновлен!');
+                    loadUsers(); // Обновляем список пользователей
+                    document.getElementById('edit-modal').style.display = 'none'; // Закрываем модальное окно
+                } catch (error) {
+                    console.error('Ошибка:', error);
+                }
+            }
+
+            // Закрытие модального окна при клике вне его
+            window.onclick = function(event) {
+                const modal = document.getElementById('edit-modal');
+                if (event.target === modal) {
+                    modal.style.display = 'none'; // Закрываем модальное окно
+                }
+            }
+
+            // Загружаем пользователей при загрузке страницы
+            window.onload = loadUsers;
+        </script>
+
+    </main>
 
 </body>
 
 </html>
+

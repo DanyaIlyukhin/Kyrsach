@@ -9,7 +9,7 @@ async function checkAuth() {
                 document.getElementById('admin-panel').style.display = 'block';
                 document.getElementById('auth-buttons').style.display = 'none';
                 document.getElementById('user-cabinet').style.display = 'none';
-                setupLogoutButton('logout-button-1'); // Настраиваем кнопку выхода
+                setupLogoutButton('logout-button-1'); 
             }
             else {
                 document.getElementById('admin-panel').style.display = 'none';

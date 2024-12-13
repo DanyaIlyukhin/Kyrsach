@@ -27,7 +27,7 @@
 
                 <div id="admin-panel" style="display: none;">
                     <a class="button-link" href="/panel">Панель управления</a>
-                    <a class="button-link" href="/profile">Профиль</a>
+                    <a class="button-link"   href="/profile">Профиль</a>
                     <button id="logout-button-1" class="back-button-link" style="color:  #5687fc;">Выход</button>
                 </div>
                 
@@ -135,5 +135,39 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('telephone_number');
+            
+            // Максимальная длина номера телефона (11 цифр)
+            const maxLength = 12; // Учитываем форматирование, например: "8 (800) 234-48-42"
+        
+            // Функция форматирования номера телефона
+            function formatPhoneNumber(value) {
+                value = value.replace(/\D/g, ''); // Удаляем все нецифровые символы
+                if (value.length > 1) {
+                    value = '8' + value.slice(1); // Обеспечиваем, чтобы номер начинался с '8'
+                    value = value.replace(/(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})/, '$1 ($2) $3-$4-$5');
+                } else if (value.length === 1) {
+                    value = '8'; // Если введена только одна цифра
+                }
+                return value;
+            }
+        
+            // Устанавливаем начальное отформатированное значение
+            input.value = formatPhoneNumber(input.value);
+        
+            // Событие ввода для форматирования по мере ввода пользователем
+            input.addEventListener('input', function() {
+                // Ограничение длины ввода
+                if (this.value.replace(/\D/g, '').length >= maxLength) {
+                    this.value = formatPhoneNumber(this.value.slice(0, -1)); // Удаляем последний символ
+                } else {
+                    this.value = formatPhoneNumber(this.value);
+                }
+            });
+        });
+        
+        </script>
 </body> 
 </html>

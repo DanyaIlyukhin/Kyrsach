@@ -1,0 +1,53 @@
+h1 {
+    text-align: center;
+    color: #ffffff; /* Цвет заголовка */
+}
+
+.field-container {
+    display: grid; /* Используем Grid для расположения карточек */
+    gap: 10px; /* Промежуток между карточками */
+    padding: 5px; /* Отступы вокруг сетки */
+    background-color: #ffffff;
+}
+
+.field-item {
+    margin: 30px; /* Убираем отступы у элементов сетки */
+    width: 100%;
+}
+
+.field-card {
+    display: flex;
+    border: 1px solid #ffffff;
+    overflow: hidden;
+    transition: transform 0.2s;
+    height: 500px;
+    max-height: 100%;
+    padding: 10px;
+    gap: 20px;
+}
+
+.field-card:hover {   
+    border: 1px solid #00c8ff; /* Цвет рамки при наведении */
+}
+
+.field-image {
+    width: 600px; /* Ширина изображения 100% от родительского элемента */
+    
+    object-fit: cover; /* Изображение будет обрезано, чтобы заполнить контейнер */
+}
+
+.field-details {
+    padding: 15px 0px;
+    background-color: #ffffff; /* Фоновый цвет деталей поля */
+}
+
+.field-title {
+    font-size: 1.5em; /* Размер шрифта заголовка поля */
+    margin-bottom: 10px;
+    color: #ffffff; /* Цвет заголовка карточки поля */
+}
+
+.field-details h2 {
+    margin: 5px 0; /* Отступы для заголовка цены */
+    color: #0056b3; /* Цвет текста цены */
+}

@@ -147,7 +147,6 @@ module.exports = (app) => {
                 return res.status(401).json({ error: 'Ты ботик' });
             }
 
-            // return res.status(201).json(result.rows[0]); // Возвращаем созданного пользователя
         } catch (error) {
             console.error(error);
             if (error.code === '23505') { // Код ошибки для уникального ограничения (например, дублирующий логин или телефон)
