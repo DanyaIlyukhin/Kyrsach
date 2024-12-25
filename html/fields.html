@@ -6,11 +6,11 @@
     <title>Аренда Футбольных Полей</title>
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/fields.css">
-    <script rel="stylesheet" src="/fields.js"></script>
-    <script rel="stylesheet" src="/help.js"></script>
+    <script src="/fields.js"></script>
+    <script src="/help.js"></script>
     <link rel="stylesheet" href="/css/registr.css">
-    <script rel="stylesheet" src="/scripts/fetchfields.js"></script> 
-    <script rel="stylesheet" src="/scripts/authorization.js"></script>
+    <script src="/scripts/fetchfields.js"></script> 
+    <script src="/scripts/authorization.js"></script>
 </head>
 <body>
     <header class="header">
@@ -24,7 +24,7 @@
                 </nav>
                 <div id="admin-panel" style="display: none;">
                     <a class="button-link" href="/panel">Панель управления</a>
-                    <a class="button-link"   href="/profile">Профиль</a>
+                    <a class="button-link" href="/profile">Профиль</a>
                     <button id="logout-button-1" class="back-button-link" style="color:  #5687fc;">Выход</button>
                 </div>
                 
@@ -38,71 +38,144 @@
             </div>  
         </div>
     </header>
+
     <main>
         <div class="container">
             <h1>Список Полей</h1>
+
+            <div class="search-container" style="margin-bottom: 20px;">
+                <input type="text" id="search-input" placeholder="Введите название поля..." />
+                <button id="search-button">Поиск</button>
+
+                <span class="filter-title" style="display: flex;align-items: center; justify-content: space-between;"><strong>Количество игроков:</strong></span>
+                <button id="filter-5x5" class="filter-button">5 на 5</button>
+                <button id="filter-7x7" class="filter-button">7 на 7</button>
+                <button id="filter-11x11" class="filter-button">11 на 11</button>
+            </div>
+
             <div class="field-container" id="field-container"></div> <!-- Здесь будут отображаться поля -->
         </div>
-        <!-- Модальное окно авторизации -->
-    <div id="authModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
 
-            <!-- Вкладки для выбора формы -->
-            <div class="tab-container">
-                <button id="loginTab" onclick='showLogin()' class='tab-button active'>Вход</button>
-                <button id='registrationTab' onclick='showRegistration()' class='tab-button'>Регистрация</button>
-            </div>
+        <div id="authModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
 
-            <!-- Форма входа -->
-            <form id='loginForm' action="/login" method="POST"> 
-                <h2>Вход</h2>
-                
-                <label for='login'>Логин:</label>
-                <input type='text' id='login' name='login' required /> 
-            
-                <label for='loginPassword'>Пароль:</label>
-                <input type='password' id='loginPassword' name='password' required />
-            
-                <button type='submit'>Войти</button> 
-            </form>
+                <div class="tab-container">
+                    <button id="loginTab" onclick='showLogin()' class='tab-button active'>Вход</button>
+                    <button id='registrationTab' onclick='showRegistration()' class='tab-button'>Регистрация</button>
+                </div>
 
-            <!-- Форма регистрации -->
-            <div id='registrationForm' style='display:none;'>
-                <h2>Регистрация</h2>
-                <form action="/register" method="POST"> <!-- Добавлен action и method -->
-                    <label for="first_name">Имя:</label>
-                    <input type="text" id="first_name" name="first_name" required maxlength="50">
-            
-                    <label for="surname">Фамилия:</label>
-                    <input type="text" id="surname" name="surname" required maxlength="50">
-            
-                    <label for="middlename">Отчество:</label>
-                    <input type="text" id="middlename" name="middlename" required maxlength="50">
-            
-                    <label for="login">Логин:</label>
-                    <input type="text" id="login" name="login" required maxlength="40">
-            
-                    <label for="password_user">Пароль:</label>
-                    <input type="password" id="password_user" name="password_user" required maxlength="30">
-            
-                    <label for="telephone_number">Телефон:</label>
-                    <input type="tel" id="telephone_number" name="telephone_number" required pattern="\d{11}" title="Введите 11-значный номер телефона">
+                <form id='loginForm' action="/login" method="POST"> 
+                    <h2>Вход</h2>
                     
-                    <button type='submit'>Зарегистрироваться</button> 
+                    <label for='login'>Логин:</label>
+                    <input type='text' id='login' name='login' required /> 
+                
+                    <label for='loginPassword'>Пароль:</label>
+                    <input type='password' id='loginPassword' name='password' required />
+                
+                    <button type='submit'>Войти</button> 
                 </form>
+
+                <div id='registrationForm' style='display:none;'>
+                    <h2>Регистрация</h2>
+                    <form action="/register" method="POST"> 
+                        <label for="first_name">Имя:</label>
+                        <input type="text" id="first_name" name="first_name" required maxlength="50">
+                
+                        <label for="surname">Фамилия:</label>
+                        <input type ="text" id= "surname" name= "surname" required maxlength ="50">
+
+                        button type='submit'>Зарегистрироваться</button> 
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
     </main>
 
+    <!-- Скрипт для обработки загрузки полей и поиска -->
     <script>
         window.onload = () => {
             fetchFields(); // Получение полей
             checkAuth(); // Проверка статуса аутентификации
         };
+
+        // Обработчик события для кнопки поиска
+        document.getElementById('search-button').addEventListener('click', function() {
+            const query = document.getElementById('search-input').value.trim();
+            if (query) {
+                searchFields(query);
+            } else {
+                fetchFields(); // Если строка поиска пуста, загружаем все поля
+            }
+        });
+
+        // Обработчики событий для кнопок фильтрации
+        document.getElementById('filter-5x5').addEventListener('click', function() {
+            filterFields('5 на 5');
+        });
+
+        document.getElementById('filter-7x7').addEventListener('click', function() {
+            filterFields('7 на 7');
+        });
+
+        document.getElementById('filter-11x11').addEventListener('click', function() {
+            filterFields('11 на 11');
+        });
+
+        // Функция для выполнения поиска полей
+        async function searchFields(query) {
+            try {
+                const response = await fetch(`/search_fields?query=${encodeURIComponent(query)}`);
+                if (!response.ok) throw new Error('Ошибка при поиске полей.');
+                
+                const fields = await response.json();
+                populateFieldContainer(fields);
+            } catch (error) {
+                console.error(error);
+                alert('Не удалось выполнить поиск полей.');
+            }
+        }
+
+        // Функция для фильтрации полей по количеству игроков
+        async function filterFields(playerCount) {
+            try {
+                const response = await fetch(`/filter_fields?count=${encodeURIComponent(playerCount)}`);
+                if (!response.ok) throw new Error('Ошибка при фильтрации полей.');
+                
+                const fields = await response.json();
+                populateFieldContainer(fields);
+            } catch (error) {
+                console.error(error);
+                alert('Не удалось выполнить фильтрацию полей.');
+            }
+        }
+
+        // Функция для заполнения контейнера полями
+        function populateFieldContainer(fields) {
+            const container = document.getElementById('field-container');
+            container.innerHTML = ''; // Очищаем контейнер перед добавлением новых данных
+
+            fields.forEach(field => {
+                const fieldDiv = document.createElement('div');
+                fieldDiv.classList.add('field-item');
+                
+                // Добавляем всю информацию о поле
+                fieldDiv.innerHTML = `
+                    <a href="/field/${field.field_id}" style="text-decoration: none; color: inherit;">
+                    <div class="field-card">
+                        <img src="/image/${field.field_id}" alt="${field.name_field}" class="field-image">
+                        <div class="field-details">
+                            <h2 class="field-title">${field.name_field}</h2>
+                            <h2 > ${field.address}</h2>
+                            <h2 style="color:#0056b3;"><strong class="h2">${field.price} ₽ / час </strong></h2>
+                        </div>
+                    </div>
+                </a>
+                `; 
+                container.appendChild(fieldDiv);
+            });
+        }
     </script>
-
 </body>
-
 </html>

@@ -38,10 +38,10 @@ module.exports = (app, upload) => {
                 <td>${field.size_field}</td>
                 <td>${field.number_of_players}</td>
                 <td>${field.type_of_coating}</td>
-                <td>${field.is_lighting ? 'Да' : 'Нет'}</td>
-                <td>${field.is_stands ? 'Да' : 'Нет'}</td>
-                <td>${field.is_changings_rooms ? 'Да' : 'Нет'}</td>
-                <td>${field.is_parking ? 'Да' : 'Нет'}</td>
+                <td>${field.is_lighting ? 'Есть' : 'Нет'}</td>
+                <td>${field.is_stands ? 'Есть' : 'Нет'}</td>
+                <td>${field.is_changings_rooms ? 'Есть' : 'Нет'}</td>
+                <td>${field.is_parking ? 'Есть' : 'Нет'}</td>
 
                 <!-- Предполагается, что фото хранится по URL -->
                 <td><img src="/image/${field.field_id}" alt="${field.name_field}" class="car-image"></td>
@@ -96,7 +96,7 @@ module.exports = (app, upload) => {
 
     // Функция редактирования поля
     function editField(fieldId) {
-        window.location.href = `/update/${fieldId}`; // Перенаправление на страницу редактирования
+        window.location.href = `/edit-field/${fieldId}`; // Перенаправление на страницу редактирования
     }
 
     // Загружаем данные о полях при загрузке страницы

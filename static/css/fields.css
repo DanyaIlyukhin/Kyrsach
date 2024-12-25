@@ -1,6 +1,6 @@
 h1 {
     text-align: center;
-    color: #ffffff; /* Цвет заголовка */
+    color: #0056b3; /* Цвет заголовка */
 }
 
 .field-container {
@@ -50,4 +50,39 @@ h1 {
 .field-details h2 {
     margin: 5px 0; /* Отступы для заголовка цены */
     color: #0056b3; /* Цвет текста цены */
+}
+
+#search-input {
+    width: 200px; /* Уменьшаем ширину поля ввода */
+    padding: 5px; /* Увеличиваем отступы для лучшего восприятия */
+    margin-right: 10px; /* Отступ справа для расстояния между полем и кнопкой */
+}
+
+#search-button {
+    padding: 5px 10px; /* Уменьшаем отступы кнопки */
+    font-size: 14px; /* Уменьшаем размер шрифта кнопки */
+}
+.filter-button {
+    background-color: #007bff; /* Синий цвет */
+    color: white; /* Цвет текста */
+    border: none; /* Убираем рамку */
+    padding: 10px 15px; /* Увеличенные отступы */
+    margin-left: 10px; /* Отступ слева для расстояния между кнопками */
+    cursor: pointer; /* Указатель при наведении */
+    font-size: 16px; /* Размер шрифта */
+    border-radius: 5px; /* Закругленные углы */
+}
+
+.filter-button:hover {
+    background-color: #0056b3; /* Темнее при наведении */
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Распределяем пространство между элементами */
+}
+
+.filter-title {
+    margin-right: 20px; /* Отступ между заголовком и кнопками */
 }

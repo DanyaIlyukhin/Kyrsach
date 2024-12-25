@@ -15,6 +15,7 @@ const isAdmin = (req, res, next) => {
         res.redirect('/404');
     }
 };
+
 module.exports = (app) => {
     app.get('/select_users', isAdmin, async (req, res) => {
         try {
@@ -40,18 +41,17 @@ module.exports = (app) => {
             console.error(error);
             res.status(500).send('Ошибка при обновлении статуса аккаунта.');
         }
+    });
+    app.post('/update_account_status/:id', async (req, res) => {
+        const userId = req.params.id; 
+        const { account_status } = req.body; 
 
-        app.post('/update_account_status/:id', async (req, res) => {
-            const userId = req.params.id; 
-            const { account_status } = req.body; 
-
-            try {
-                await pool.query('UPDATE users SET account_status = $1 WHERE user_id = $2',[true, userId] );
-                res.sendStatus(200); 
-            } catch (error) {
-                console.error(error);
-                res.status(500).send('Ошибка при обновлении статуса аккаунта.');
-            }
-        });
+        try {
+            await pool.query('UPDATE users SET account_status = $1 WHERE user_id = $2',[true, userId] );
+            res.sendStatus(200); 
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Ошибка при обновлении статуса аккаунта.');
+        }
     });
 }

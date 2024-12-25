@@ -17,80 +17,87 @@ const isAdmin = (req, res, next) => {
 };
 
 module.exports = (app, upload) => {
-    // Получение данных поля по ID
-app.get('/fields/:fieldId', async (req, res) => {
-    const fieldId = req.params.fieldId;
-    try {
-        const result = await pool.query('SELECT * FROM fields WHERE field_id = $1', [fieldId]);
-        if (result.rows.length === 0) {
-            return res.status(404).send('Поле не найдено');
+    app.get('/fields/:fieldId', async (req, res) => {
+        const fieldId = req.params.fieldId;
+        try {
+            const result = await pool.query('SELECT * FROM fields WHERE field_id = $1', [fieldId]);
+            if (result.rows.length === 0) {
+                return res.status(404).send('Поле не найдено');
+            }
+            res.json(result.rows[0]); 
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Ошибка при получении данных поля');
         }
-        res.json(result.rows[0]); // Возвращаем данные поля
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Ошибка при получении данных поля');
-    }
-});
+    });
 
-// Маршрут для редактирования поля
-app.post('/fields/update/:fieldId', upload.single('photo'), async (req, res) => {
-    const fieldId = req.params.fieldId;
-    
-    const { 
-        name_field, 
-        address, 
-        size_field, 
-        number_of_players, 
-        type_of_coating, 
-        is_lighting, 
-        is_stands, 
-        is_changings_rooms, 
-        is_parking, 
-        price, 
-        information 
-    } = req.body;
+    app.get('/edit-field/:fieldId', async (req, res) => {
+        const fieldId = req.params.fieldId;
 
-    let photo = req.file ? req.file.buffer : null; // Получаем загруженный файл, если он есть
+        try {
+            const result = await pool.query('SELECT * FROM fields WHERE field_id = $1', [fieldId]);
+            if (result.rows.length === 0) {
+                return res.status(404).send('Поле не найдено');
+            }
 
-    try {
-        const query = `
-            UPDATE fields SET 
-                name_field = $1,
-                address = $2,
-                size_field = $3,
-                number_of_players = $4,
-                type_of_coating = $5,
-                is_lighting = $6,
-                is_stands = $7,
-                is_changings_rooms = $8,
-                is_parking = $9,
-                photo = COALESCE($10, photo), -- Сохраняем существующее фото, если новое не загружено
-                price = $11,
-                information = $12
-            WHERE field_id = $13
-        `;
+            const field = result.rows[0];
+            
+            res.send(`
+            <!DOCTYPE html>
+    <html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Редактирование Поля</title>
+        <link rel="stylesheet" href="/css/main.css">
+    </head>
 
-        const values = [
-            name_field,
-            address,
-            size_field,
-            number_of_players,
-            type_of_coating,
-            is_lighting === 'true',
-            is_stands === 'true',
-            is_changings_rooms === 'true',
-            is_parking === 'true',
-            photo,
-            price,
-            information,
-            fieldId
-        ];
+    <body>
+        <header class="header">
+            <div class="container">
+                <h1>Редактирование Поля</h1>
+            </div>
+        </header>
 
-        await pool.query(query, values);
-        res.redirect('/fields'); // Перенаправление на страницу со списком полей или другую страницу по вашему выбору
-    } catch (error) {
-        console.error(error);
-        res.status(500).send(`Ошибка при обновлении данных поля: ${error.message}`);
-    }
-});
+        <main>
+            <div class="container">
+                <h2>Изменить данные</h2>
+                <form id="update-form" enctype="multipart/form-data" action="/fields/update/${field.field_id}" method="POST">
+                    <label for="name_field">Название поля:</label>
+                    <input type="text" id="name_field" name="name_field" value="${field.name_field}" required />
+
+                    <label for="address">Адрес:</label>
+                    <input type="text" id="address" name="address" value="${field.address}" required />
+
+                    <label for="size_field">Размер поля:</label>
+                    <input type="text" id="size_field" name="size_field" value="${field.size_field}" required />
+
+                    <label for="number_of_players">Количество игроков:</label>
+                    <input type="text" id="number_of_players" name="number_of_players" value="${field.number_of_players}" required />
+
+                    <label for="type_of_coating">Тип покрытия:</label>
+                    <input type="text" id="type_of_coating" name="type_of_coating" value="${field.type_of_coating}" required />
+
+                    <label for='is_lighting'>Освещение:</label>
+                    <select id='is_lighting' name='is_lighting' required>
+                        <option value='true' ${field.is_lighting ? 'selected' : ''}>Да</option>
+                        <option value='false' ${!field.is_lighting ? 'selected' : ''}>Нет</option>
+                    </select>
+
+                    <!-- Остальные поля аналогично... -->
+
+                    <!-- Кнопка отправки -->
+                    <button type='submit'>Сохранить изменения</button >
+                </form >
+            </div >
+            
+    </body >
+    </html >
+            `);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(`Ошибка при получении данных о поле: ${error.message}`);
+        }
+    });
+
 }

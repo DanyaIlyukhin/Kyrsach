@@ -7,9 +7,10 @@
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/redact.css">
     <script rel="stylesheet" src="/scripts/authorization.js"></script>
-    <script rel="stylesheet" src="/scripts/redact.js"></script> 
+    <script rel="stylesheet" src="/redact.js"></script> 
     <script rel="stylesheet" src="/update.js"></script> 
     <script rel="stylesheet" src="/help.js"></script>
+    <script rel="stylesheet" src="/searchfields.js"></script>
     
 </head>
 
@@ -33,14 +34,14 @@
             </div>  
         </div>
     </header>
-
+  
     <main>
         <div class="container1">
             <h1>Список Полей</h1>
-            <div class="search-container">
+            <!-- <div class="search-container">
                 <input type="text" id="search-input" placeholder="Введите название поля">
-                <button onclick="searchFields()">Поиск</button>
-            </div>
+                <button onclick="findFields()">Поиск</button>
+            </div> -->
 
             <table>
                 <thead>
@@ -58,22 +59,18 @@
                         <th>Фото</th>
                         <th>Цена</th>
                         <th>Информация</th>
-
-                        <!-- Кнопки редактирования и удаления -->
                         <th>Действия</th>
                     </tr>
                 </thead>
-                <tbody id="field-table-body"></tbody> <!-- Изменено ID для соответствия -->
+                <tbody id="field-table-body"></tbody> 
             </table>
         </div>
     </main>
-
-
-    <!-- Скрипт для загрузки полей -->
+->
     <script>
         async function loadFields() {
             try {
-                const response = await fetch('/select_fields'); // Запрос на получение полей
+                const response = await fetch('/select_fields');
                 if (!response.ok) throw new Error('Ошибка при получении данных полей.');
 
                 const fields = await response.json();
@@ -106,17 +103,8 @@
                 console.error('Ошибка:', error);
             }
         }
-
-        // Функция для поиска полей
-        function searchFields() {
-            const query = document.getElementById('search-input').value;
-            // Здесь можно реализовать логику поиска по полям
-        }
-
-        // Загружаем поля при загрузке страницы
         window.onload = loadFields;
     </script>
 
 </body>
-
 </html>

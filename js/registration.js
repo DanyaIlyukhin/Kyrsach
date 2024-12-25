@@ -80,7 +80,6 @@ module.exports = (app) => {
             return res.status(401).json({ message: 'Необходима аутентификация.' }); // Возвращаем JSON с сообщением об ошибке
         }
         
-        // Предполагаем, что req.session.user содержит информацию о пользователе
         const userData = {
             user_id: req.session.user.user_id,
             first_name: req.session.user.first_name,
